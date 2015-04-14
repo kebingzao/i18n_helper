@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <title><%= project.name %>项目详情</title>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<div class="loading-mask loading-mask-import i-hide">
+    <div>正在导入crowdin翻译结果，请等待</div>
+</div>
+<div class="loading-mask loading-mask-translation i-hide">
+    <div>正在从crowdin 平台上下载翻译文件，请等待</div>
+</div>
+<div class="loading-mask loading-mask-refresh i-hide">
+    <div>正在请求crowdin生成最新翻译结果，请等待</div>
+</div>
+<div class="container">
+
+    <nav class="breadcrumb">
+        <a href="/web/" class="active">回到首页</a>
+    </nav>
+
+    <div class="tip"></div>
+    <div class="jumbotron">
+        <h4>
+            <span>项目名称：</span><span><%= project.name %></span>
+        </h4>
+        <div>
+            <span>项目描述：</span><span><%= project.des %></span>
+        </div>
+        <div>
+            <span>项目负责人：</span><span><%= project.owner %></span>
+        </div>
+        <div>
+            <span>是否上crowdin平台：</span><span class="<%= project.crowdin == '1' ? 'inCrowdin' : 'noCrowdin' %>"><%= project.crowdin == '1' ? "是" : "否" %></span>
+        </div>
+        <% if(project.crowdin == '1'){ %>
+        <div>
+            <span>在crowdin平台上的文件名： </span><span><%= project.package+".csv" %></span>
+        </div>
+        <div>
+            <span>最近一次导入翻译的时间: </span><span style="color: green;" class="updateTime" data-data="<%= project.updateTime || '' %>"><%= project.updateTime || "无" %></span>
+        </div>
+        <% if(project.LocalMaintenance){ %>
+        <div>
+            <div style="color: red;">本地维护语言未审核情况:</div>
+            <% for(var i in project.LocalMaintenance){ %>
+            <div>
+            <span><%= i%></span>:
+            <span>
+                <% if(project.LocalMaintenance[i] && project.LocalMaintenance[i].length > 0){ %>
+                    <%= project.LocalMaintenance[i].length%> 条
+                <% } else { %>
+                    无
+                <% } %>
+            </span>
+            </div>
+            <% } %>
+        </div>
+        <% } %>
+        <%}%>
+    </div>
+
+    <!--操作项-->
+    <section class="show-opts pull-left">
+        <div class="btn-group-vertical pull-left">
+            <strong>常规操作:</strong>
+            <a class="btn btn-default" href="../<%= project.name %>/list/add">新增一种语言</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/lang/add">新增KEY</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/lang/editKey">修改KEY</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/buildFile">生成开发用的语言文件</a>
+            <a class="btn btn-default" href="../<%= project.name %>/downloadFile">下载语言文件到本地</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/importFile">导入翻译源文件(en)</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/importI18nFile">导入i18n源文件</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/lang/multiAdd">批量导入新key</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/exportCrowdinCSV">生成上平台用的csv文件</a>
+            <!-- 接下来的操作，只有上了crowdin平台的时候，才会有 -->
+            <% if(project.crowdin == '1'){ %>
+            <strong style="display: inline-block;margin-top: 30px;">语言平台操作：</strong>
+            <a id="imporTransBtn" class="btn btn-default"  href="../<%= project.name %>/importTranslate">导入最新翻译结果</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/importCrowdinZip">导入crowdin平台zip包</a>
+
+            <strong style="display: inline-block;margin-top: 30px;">语言平台的api操作：<br>(请确保vpn已开或者翻墙)</strong>
+            <a id="refreshTransBtn" class="btn btn-default"  href="../<%= project.name %>/refreshTranslation">请求crowdin<br>生成最新翻译结果</a>
+            <a id="downloadTransBtn" class="btn btn-default"  href="../<%= project.name %>/downloadTranslation">下载翻译结果到项目</a>
+            <a class="btn btn-default"  href="../<%= project.name %>/uploadTranslation">上传翻译文件到平台</a>
+            <% } %>
+        </div>
+
+    </section>
+
+    <!--语言列表-->
+    <section class="show-languages panel panel-default">
+        <div class="panel-heading">项目语言</div>
+        <div class="panel-body">
+        <div>
+            <a class="btn btn-primary" href="../<%= project.name %>/list/edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+                编辑启用的语言
+            </a>
+            <a class="btn btn-primary" href="../<%=project.name%>/edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+                编辑项目
+            </a>
+            <a class="btn btn-primary" href="../<%= project.name %>/buildFile/js">
+                生成开发js
+            </a>
+            <a class="btn btn-primary" href="../<%= project.name %>/checkLocalTranslation">
+                检查翻译情况(本地)
+            </a>
+            <% if(project.crowdin == '1'){ %>
+            <a class="btn btn-primary" href="../<%= project.name %>/showLocalLang">
+                <span class="glyphicon glyphicon-pencil"></span>
+                设置本地维护语言
+            </a>
+            <% } %>
+        </div>
+        <br>
+        <div>
+            <% list.forEach(function(item){ %>
+            <table class="table project_list_item">
+                <tbody>
+                <tr>
+                    <td>
+                        <a href="../<%= project.name %>/list/<%= item.langcode %>">
+                            <%= item.name %>
+                            <span class="badge"><%= item.langcode %></span>
+                        </a>
+                        <a  class="i-float-right" href="../<%= project.name %>/getFile/<%= item.langcode %>.js" target="_blank">
+                            对应的线上js地址
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
+            <% }) %>
+        </div>
+        </div>
+    </section>
+
+</div>
+<script type="text/javascript">
+    (function () {
+        var updateTime = $(".updateTime").attr("data-data");
+        if(updateTime){
+            $(".updateTime").text(new Date(parseInt(updateTime)).toLocaleString());
+        }
+        $("#imporTransBtn").click(function(){
+            $('.loading-mask-import').removeClass("i-hide");
+        });
+        $("#downloadTransBtn").click(function(){
+            $('.loading-mask-translation').removeClass("i-hide");
+        });
+        $("#refreshTransBtn").click(function(){
+            $('.loading-mask-refresh').removeClass("i-hide");
+        });
+    })();
+</script>
+</body>
+</html>

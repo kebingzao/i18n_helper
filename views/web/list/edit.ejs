@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>启用的语言列表</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </div>
+    <div class="alert alert-info tip" style="display: none;"></div>
+    <table class="table" data-project="<%=projectName%>">
+        <thead>
+        <tr>
+            <th>语言名称</th>
+            <th>编码</th>
+            <th>文件夹名称</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% allLang.forEach(function(lang){ %>
+        <tr id="<%=lang._id%>">
+            <td><input class="name form-control" type="text" name="name" value="<%=lang.name%>"></td>
+            <td><input class="langcode form-control" type="text" name="langcode" value="<%=lang.langcode%>"></td>
+            <td><input class="folder form-control" type="text" name="folder" value="<%=lang.folder%>"></td>
+            <td>
+                <button class="edit btn btn-primary" data-id="<%=lang._id%>"><span class="glyphicon glyphicon-edit"></span></button>
+            </td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".edit").click(function () {
+            var id = $(this).attr('data-id');
+            var projectName = $(this).closest("table").attr("data-project");
+            var row = document.getElementById(id);
+
+            var name = $(row).find(".name").val();
+            var langcode = $(row).find(".langcode").val();
+            var folder = $(row).find(".folder").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/web/project/"+ projectName +"/list/edit",
+                data: {id: id, name: name, langcode: langcode, folder: folder},
+                success: function (data) {
+                    $('.tip').text(data).show().delay(2000).fadeOut();
+                },
+                error: function (data) {
+
+                }
+            });
+        });
+    })();
+</script>
+</body>
+</html>

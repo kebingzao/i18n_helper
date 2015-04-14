@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>下载语言文件</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+
+    <form class="" method="post" enctype="multipart/form-data" action="/web/project/<%=projectName%>/downloadFile">
+        <div class="form-group">
+            <label>选择要导出文件的数据格式</label>
+            <select class="form-control ext_type" name="ext">
+                <option value="js" default>js</option>
+                <option value="json">json</option>
+                <option value="xml">xml</option>
+                <option value="txt">txt(pc端)</option>
+                <option value="csv">csv</option>
+            </select>
+        </div>
+        <div class="form-group txt-options i-hide">
+            <label>请选择是否带引号</label>
+            <select class="form-control" name="txt_quote">
+                <option value="0">无</option>
+                <option value="1">有</option>
+            </select>
+        </div>
+        <div class="form-group txt-options i-hide">
+            <label>请选择要导出的后缀名:</label>
+            <input type="text" value="txt" name="txt_ext">
+        </div>
+        <input class="btn btn-primary" class="form-control" type="submit" value="导出">
+    </form>
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".ext_type")
+                .live('change', function (e) {
+                    var $this = $(this);
+                    if($this.val() == 'txt'){
+                        $('.txt-options').removeClass("i-hide");
+                    }else{
+                        $('.txt-options').addClass("i-hide");
+                    }
+                });
+    })();
+</script>
+</body>
+</html>

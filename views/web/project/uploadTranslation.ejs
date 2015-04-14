@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>上传翻译文件到crowdin平台</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body data-project="<%=projectName%>">
+<div class="loading-mask i-hide">
+    <div>正在上传crowdin翻译结果，请等待</div>
+</div>
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </div>
+    <div class="label label-warning" style="display: block;text-align: left">
+        <p>上传翻译文件到crowdin平台上，注意:该设置只对上平台的项目有用</p>
+    </div>
+    <br>
+    <div class="alert alert-danger tip" style="display: none;"></div>
+    <form class="" method="post" enctype="multipart/form-data" action="/web/project/<%=projectName%>/uploadTranslation">
+        <div class="form-group">
+            <label>选择文件</label>
+            <input class="form-control" type="file" name="file"/>
+        </div>
+
+        <div class="form-group">
+            <label>数据格式</label>
+            <select class="ext-select form-control" name="ext">
+                <option value="csv">csv</option>
+            </select>
+        </div>
+        <div class="form-group csv-type">
+            <label>请选择要导入的语言</label>
+            <select class="form-control" name="langcode">
+                <% allLang.forEach(function(langItem){ %>
+                <option data-name="<%=langItem.name%>" value="<%=langItem.folder%>" data-folder="<%=langItem.folder%>"><%= langItem.name %> (<%=langItem.langcode%>)</option>
+                <%})%>
+            </select>
+        </div>
+        <input class="btn btn-primary importBtn" class="form-control" type="submit" value="导入翻译">
+    </form>
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".importBtn").click(function(){
+            $(".loading-mask").removeClass('i-hide');
+        })
+    })();
+</script>
+</body>
+</html>

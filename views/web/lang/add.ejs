@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=name%> -- 添加词条</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=name%>/show">项目首页</a> |
+    </nav>
+
+    <%if(msg){%>
+    <div class="alert alert-success <%if(state=='0'){%>alert-danger<%}%> tip i-hide"><%=msg%></div>
+    <script type="text/javascript">
+        $('.tip').show().delay(2000).fadeOut();
+    </script>
+    <%}%>
+
+    <div class="panel panel-primary">
+
+        <div class="panel-heading">
+            <span>添加KEY</span> -- <span><%=name%></span>
+        </div>
+
+        <div class="panel-body">
+            <form method="POST">
+                <div class="item form-group">
+                    <label>KEY</label>
+                    <input class="form-control" type="text" name="key" required="">
+                    <sapn class="label label-info">格式 module.key, 如果没有模块，就直接填key</sapn>
+                </div>
+                <div class="item form-group">
+                    <label>Value</label>
+                    <input class="form-control" type="text" name="value" required="" value="麻烦海外添加">
+                </div>
+                <div class="item form-group">
+                    <label>Des</label>
+                    <input class="form-control" type="text" name="des" required="" value="上下文环境">
+                </div>
+                <input class="btn btn-primary" type="submit" value="提交">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>导入i18n源文件</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+    <% if(langlist.length == 0){%>
+    <span class="label label-warning">请为该项目添加多语言</span>
+    <% }else{ %>
+    <span class="label label-warning">注意，该功能要慎用，最好在项目刚建立的时候，导入i18n的其他语种</span><br/>
+    <span class="label label-warning">或者是导入其他翻译平台的(如gengo)用的</span>
+    <br>
+    <form class="" method="post" enctype="multipart/form-data" action="/web/project/<%=projectName%>/importI18nFile">
+        <div class="form-group">
+            <label>选择文件</label>
+            <input class="form-control" type="file" name="file"/>
+        </div>
+
+        <div class="form-group">
+            <label>数据格式</label>
+            <select class="ext-select form-control" name="ext">
+                <option value="xls">xls(目前用于gengo平台的翻译文件)</option>
+                <option value="txt">txt(文本格式，目前用于pc端新建项目时候导入其他翻译文件)</option>
+                <option value="xml">xml(目前用于手机端项目)</option>
+            </select>
+        </div>
+        <div class="form-group gengo">
+            gengo 翻译平台要按照以下格式：
+            <pre>
+                [[[key]]]         [[[Translation]]]
+                [[[key1]]]        value1
+                [[[key2]]]        value2
+            </pre>
+        </div>
+        <div class="form-group csv-type">
+            <label>请选择要导入的语言</label>
+            <select class="form-control" name="langcode">
+                <% langlist.forEach(function(langItem){ %>
+                <option data-name="<%=langItem.name%>" value="<%=langItem.langcode%>" data-folder="<%=langItem.folder%>"><%= langItem.name %> (<%=langItem.langcode%>)</option>
+                <%})%>
+            </select>
+        </div>
+        <input class="btn btn-primary" class="form-control" type="submit" value="导入翻译">
+    </form>
+    <% } %>
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".ext-select")
+                .live('change', function (e) {
+                    var $this = $(this);
+                    if($this.val() == 'xls'){
+                        $(".gengo").removeClass("hide");
+                    }else{
+                        $(".gengo").addClass("hide");
+                    }
+                });
+    })();
+</script>
+</body>
+</html>

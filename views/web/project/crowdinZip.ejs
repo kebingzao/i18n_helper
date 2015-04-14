@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>导入crowdin zip 包</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+
+    <form class="" method="post" enctype="multipart/form-data" action="/web/project/<%=projectName%>/importCrowdinZip">
+        <div class="form-group">
+            <label>选择zip包</label>
+            <input accept="application/x-zip-compressed" class="form-control" type="file" name="file"/>
+        </div>
+        <input class="btn btn-primary" class="form-control" type="submit" value="导入">
+    </form>
+</div>
+<script type="text/javascript">
+    (function () {
+
+    })();
+</script>
+</body>
+</html>

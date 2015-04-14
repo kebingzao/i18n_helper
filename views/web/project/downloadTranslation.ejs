@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>操作成功</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+
+<body>
+
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+
+    <div class="jumbotron">
+        翻译文件已经下载成功了，你可以返回项目首页进行<b>导入最新翻译结果</b>操作<br>
+        或者<a href="/web/project/<%=projectName%>/downloadLocalTranslation">下载翻译文件zip包到本地</a>
+    </div>
+</div>
+</body>
+</html>

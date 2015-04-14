@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=name%>项目 -- 语言列表 -- <%=lang%></title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<!--<div class="container">-->
+    <div class="head breadcrumb" data-project="<%=name%>" data-lang="<%=lang%>">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=name%>/show">项目首页</a> |
+        <a href="/web/project/<%=name %>/list/<%=lang%>?action=1">查看上平台是否有中文</a> |
+        <% if(lang=="en"){ %>
+        <a href="/web/project/<%=name %>/list/<%=lang%>?action=2">只看空value(en)</a> |
+        <% }else{ %>
+        <a href="/web/project/<%=name %>/list/<%=lang%>?action=4">只看空value(i18n)</a> |
+        <% } %>
+        <a href="/web/project/<%=name %>/list/<%=lang%>?action=3">只看空context</a> |
+        <% if(crowdin == '1' && local == '1' && localMaintenance){%>
+        <a href="/web/project/<%=name %>/list/<%=lang%>?action=5">查看本地维护未审核</a> |
+        <% } %>
+        <a href="/web/project/<%=name %>/list/<%=lang%>">查看全部</a> |
+    </div>
+    <div class="alert alert-success tip i-hide"></div>
+    <div style="margin-bottom: 15px;">
+        <div>
+            <label class="control-label">项目名称:</label><span class="label label-info"><%=name%></span>
+        </div>
+        <div>
+            <label class="control-label">项目负责人:</label><span class="label label-info"><%=owner%></span>
+        </div>
+        <% if(lang!="en" && crowdin == '1'){%>
+        <div>
+        <span class="label label-warning">该语言有上平台，所以不允许在助手上编辑，只能在平台上改</span>
+        </div>
+        <%}%>
+        <% if(crowdin == '1' && local == '1'){%>
+        <div>
+            <span class="label label-warning">该语言是本地维护语言，不采用平台上的翻译结果，属于本地维护,所以可编辑</span>
+            <% if(localMaintenance){%>
+                <span class="label label-success">共有<span class="verify_count"><%=localMaintenance.length %></span>条未审核</span>
+            <% } %>
+        </div>
+        <%}%>
+        <div>
+            <span class="label label-info">共有<%= list.length %> 条语句</span>
+        </div>
+    </div>
+    <table data-keyarr="<%= localMaintenance.join(',')%>" class="table table-bordered lang_contain">
+        <thead>
+        <tr>
+            <th></th>
+            <th>Key</th>
+            <th>Value</th>
+            <% if(lang!="en"){%><th>英文的value</th><%}%>
+            <th>Context(英文描述，上平台)</th>
+            <th class="lang_des">Des(中文描述，不上平台)</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% list.forEach(function(item){ %>
+        <% if(lang=="en"){%>
+        <tr data-id="<%=item._id%>">
+            <td><a class="delLang" href="../../<%=name%>/<%=lang%>/del/<%=item._id%>"><span class="glyphicon glyphicon-trash"></span></a></td>
+            <td data-key="<%=item.key%>" class="item_key"><%=item.key%></td>
+            <td contenteditable class="editable" data-type="value"><%=item.value%></td>
+            <td contenteditable class="editable" data-type="context"><%=item.context%></td>
+            <td contenteditable class="editable lang_des" data-type="des"><%=item.des%></td>
+        </tr>
+        <%}else{%>
+        <tr data-id="<%=item._id%>">
+            <!--如果不是英语，那么就不能删除这个key-->
+            <td class="item-operate">
+                <span class="item-operate-default">无</span>
+                <span class="btn btn-success item-operate-verify hide">verify</span>
+            </td>
+            <td data-key="<%=item.key%>" class="item_key"><%=item.key%></td>
+            <!--如果不存在i18n 或者 存在 i18n 但是 却没有该语言-->
+            <%if(!item.i18n || (item.i18n && !item.i18n[lang])){%>
+                <!-- 这时候要判断有没有上平台 -->
+                <% if(crowdin == '1' && local != '1'){ %>
+                <!-- 有上平台，并且不是本地维护，就不能编辑非英语的其他语言 -->
+                <td class="item_empty" data-type="value"></td>
+                <%}else{%>
+                <td contenteditable class="editable item_empty" data-type="value"></td>
+                <%}%>
+            <%}else{%>
+                <% if(crowdin == '1' && local != '1'){ %>
+                <!-- 有上平台，并且不是本地维护，就不能编辑非英语的其他语言 -->
+                <td data-type="value"><%=item.i18n[lang]%></td>
+                <%}else{%>
+                <td contenteditable class="editable" data-type="value"><%=item.i18n[lang]%></td>
+                <%}%>
+            <%}%>
+            <td data-type="value"><%=item.value%></td>
+            <td><%=item.context%></td>
+            <td class="lang_des"><%=item.des%></td>
+        </tr>
+        <%}%>
+        <% }) %>
+        </tbody>
+    </table>
+<!--</div>-->
+<script type="text/javascript">
+    (function () {
+        // 标记待审核的语言
+        var lang_contain = $(".lang_contain");
+        var keyarr = lang_contain.attr("data-keyarr");
+        if(keyarr){
+            keyarr = keyarr.split(",");
+            for(var i=0,l=keyarr.length; i<l; i++){
+                var target = $("td[data-key='" + keyarr[i] +"']");
+                if(target.length > 0 ){
+                    var trDom = target.closest("tr");
+                    trDom.addClass("unVerify");
+                    trDom.find(".item-operate-default").addClass("hide");
+                    trDom.find(".item-operate-verify").removeClass("hide");
+                }
+            }
+        }
+        // 删除操作，要确认一下
+        $(".delLang").click(function(e){
+            var lang_key = $(e.currentTarget).closest("tr").find(".item_key").text();
+            if(confirm("确定要删除key为:" + lang_key + "的词条")){
+
+            }else{
+                e.preventDefault();
+                return false;
+            }
+        });
+        // 审核操作
+        $(".item-operate-verify").click(function(e){
+            var $this = $(e.currentTarget);
+            var trDom = $this.closest("tr");
+            var projectName = $(".head").attr("data-project");
+            var langName = $(".head").attr("data-lang");
+            var key = trDom.find('.item_key').attr("data-key");
+            if(confirm("确定要审核key为:" + key + "的值")){
+                $.post("/web/project/"+ projectName +"/"+ langName +"/verify", {
+                    key: key
+                }, function (data) {
+                    if (data == 'success') {
+                        var $tip = $(".tip");
+                        trDom.removeClass("unVerify");
+                        $(".verify_count").text(parseInt($(".verify_count").text()) - 1);
+                        trDom.find(".item-operate-default").removeClass("hide");
+                        trDom.find(".item-operate-verify").addClass("hide");
+                        $tip.text('审核<' + key + '>成功');
+                        $tip.show().delay(2000).fadeOut();
+                    }
+                })
+            }
+        });
+        // 编辑操作
+        $(".editable")
+                .live('focus', function () {
+                    var $this = $(this);
+                    $this.data('before', $this.text());
+                    return $this;
+                })
+                .live('blur keyup paste', function () {
+                    var $this = $(this);
+                    if ($this.data('before') !== $this.text()) {
+                        $this.data('before', $this.text());
+                        $this.trigger('change');
+                    }
+                    return $this;
+                })
+                .live('change', function () {
+                    var $this = $(this);
+                    var trDom = $this.closest("tr");
+                    var id = trDom.attr('data-id');
+                    var type = $this.attr('data-type');
+                    var projectName = $(".head").attr("data-project");
+                    var langName = $(".head").attr("data-lang");
+                    $this.removeClass("item_empty");
+                    var key = trDom.find('.item_key').attr("data-key");
+                    // 判断是否是本地维护语言未审核过的, 要修改的是 value字段才行
+                    var isUnverify = ((type == 'value') && trDom.hasClass("unVerify"));
+                    $.post("/web/project/"+ projectName +"/"+ langName +"/update/" + id, {
+                        key: key,
+                        type: type,
+                        content: $this.data('before').replace(/\s/g," "),
+                        unVerify: isUnverify
+                    }, function (data) {
+                        if (data == 'success') {
+                            var $tip = $(".tip");
+                            var verifyStr = "";
+                            // 确定本地语言的审核
+                            if(isUnverify){
+                                trDom.removeClass("unVerify");
+                                verifyStr = ",并将设置为已审核";
+                                $(".verify_count").text(parseInt($(".verify_count").text()) - 1);
+                                trDom.find(".item-operate-default").removeClass("hide");
+                                trDom.find(".item-operate-verify").addClass("hide");
+                            }
+                            $tip.text('保存<' + key + '>中的<' + type + '>成功' + verifyStr);
+                            $tip.show().delay(2000).fadeOut();
+                        }
+                    })
+                });
+    })();
+</script>
+</body>
+</html>

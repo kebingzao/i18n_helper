@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>检查翻译结果</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+    <div class="container_list">
+        <strong>检查结果如下：</strong>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>语言</th>
+                <th>未翻译条数</th>
+                <th>翻译完成度</th>
+                <th>查看详情</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for(var i in resultArr){ %>
+            <tr>
+                <td>
+                    <span><%= resultArr[i].lang %></span>
+                </td>
+                <td>
+                    <span><%= resultArr[i].lost %></span>
+                </td>
+                <td>
+                    <span><%= resultArr[i].percent %></span>
+                </td>
+                <td>
+                    <%if(resultArr[i].lost > 0){%><div data-lang="<%= resultArr[i].lang %>" class="btn btn-primary show_detail">查看详情</div><%}%>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+    <div class="container_detail_list">
+        <% for(var i in lostArr){ %>
+            <div class="contain_detail contain_detail_<%=i%> i-hide">
+                <div class="btn btn-primary show_list">返回列表</div>
+                <strong>以下是没有翻译的词条，共<%=lostArr[i].length%>个词条</strong>
+                <% lostArr[i].forEach(function(item){ %>
+                    <div><%=item%></div>
+                <%})%>
+            </div>
+        <%}%>
+    </div>
+</div>
+<script type="text/javascript">
+    (function () {
+        $(".show_detail").click(function(){
+            var lang = $(this).attr("data-lang");
+            $(".container_list").addClass("i-hide");
+            $(".contain_detail_" + lang).removeClass("i-hide");
+        });
+        $(".show_list").click(function(){
+            $(".container_list").removeClass("i-hide");
+            $(".contain_detail").addClass("i-hide");
+        });
+    })();
+</script>
+</body>
+</html>

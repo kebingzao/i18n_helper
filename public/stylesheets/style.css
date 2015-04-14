@@ -1,0 +1,93 @@
+body { padding: 10px; font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;line-height: 1.7em; }
+ul{
+    list-style: none;
+    padding: 0;
+}
+
+.form {
+    background: #eee;
+    padding: 20px;
+}
+.form .item {margin-bottom: 5px;}
+
+
+.project-opts{
+    position: fixed;
+    top: 5px;
+}
+.project-inputs{
+    margin-top: 50px;
+}
+
+.show-header{
+    height: 20px;
+}
+
+.show-languages{
+    margin-left: 200px;
+}
+
+.show-opts{
+}
+
+.add-title{
+    font-size: 16px;
+}
+
+.i-hide {
+    display: none;
+}
+
+.i-float-left {
+    float: left;
+}
+
+
+.i-float-right {
+    float: right;
+}
+
+.table-bordered > tbody > tr > td.item_empty {
+    border: 1px solid red;
+}
+
+.alert.alert-success,
+.alert.alert-danger,
+.alert.alert-info {
+    position: fixed;
+    top: 10px;
+    left: 30%;
+    right: 30%;
+}
+
+.loading-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,.7);
+}
+
+.loading-mask div {
+    color: #fff;
+    text-align: center;
+    font-size: 20px;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    margin-left: -155px;
+}
+.inCrowdin {
+    color: green;
+    font-weight: bold;
+}
+.noCrowdin {
+    color: red;
+    font-weight: bold;
+}
+
+.unVerify {
+    background-color: #b7d5eb;
+}

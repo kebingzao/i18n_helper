@@ -1,0 +1,29 @@
+{
+  "name": "airlang",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.4",
+    "ejs": "*",
+    "needle": "*",
+    "csv": "*",
+    "mongoskin": "*",
+    "underscore": "*",
+    "unzip": "*",
+    "express-params": "*",
+    "vows": "*",
+    "assert": "*",
+    "chai": "*",
+    "xml-writer": "*",
+    "ya-csv": "*",
+    "rimraf": "*",
+    "archiver": "*",
+    "xml2js": "*",
+    "xml": "*",
+    "underscore.string": "*",
+    "j": "~0.4.3"
+  }
+}

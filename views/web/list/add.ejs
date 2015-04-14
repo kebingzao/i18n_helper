@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=name%> -- 添加语言</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=name%>/show">项目首页</a> |
+    </nav>
+
+    <%if(msg){%>
+    <div class="alert alert-<%if(error){%>danger<%}else{%>success<%}%> tip i-hide"><%=msg%></div>
+    <script type="text/javascript">
+        $('.tip').show().delay(2000).fadeOut();
+    </script>
+    <%}%>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <span>添加语言 -- </span><span><%=name%></span>
+        </div>
+        <div class="panel-body">
+            <form method="POST" role="form">
+                <div class="item form-group">
+                    <select class="form-control" id="langSelect">
+                        <option>请选择语言</option>
+                        <% list.forEach(function(langItem){ %>
+                        <option data-name="<%=langItem.name%>" data-langcode="<%=langItem.langcode%>" data-folder="<%=langItem.folder%>"><%= langItem.name %> (<%=langItem.langcode%>)</option>
+                        <% }) %>
+                    </select>
+                </div>
+                <div class="item form-group">
+                    <label class="long">语言的中文名称:&nbsp;&nbsp;</label><span class="label label-info name_text"></span>
+                    <input type="hidden" class="form-control" name="name" id="name" required="">
+                </div>
+                <div class="item form-group">
+                    <label class="long">标准国家语言编码: &nbsp;&nbsp;</label><span class="label label-info langcode_text"></span>
+                    <input type="hidden" class="form-control" name="langcode" id="langcode" required="" value="">
+                </div>
+                <div class="item form-group">
+                    <label class="long">语言对应的crowdin平台的文件夹: &nbsp;&nbsp;</label><span class="label label-info folder_text"></span>
+                    <input type="hidden" class="form-control" name="folder" id="folder" value="">
+                </div>
+                <input id="submitBtn" type="submit" class="btn btn-primary" value="提交">
+            </form>
+    </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function(){
+        $("#langSelect").change(function (e) {
+            var sthis = $(e.currentTarget);
+            var targetOption = sthis.find("option:selected");
+            if(targetOption.attr("data-langcode")){
+                $("#name").val(targetOption.attr("data-name"));
+                $(".name_text").text(targetOption.attr("data-name"));
+                $("#langcode").val(targetOption.attr("data-langcode"));
+                $(".langcode_text").text(targetOption.attr("data-langcode"));
+                $("#folder").val(targetOption.attr("data-folder"));
+                $(".folder_text").text(targetOption.attr("data-folder"));
+            }
+        });
+        $("#submitBtn").click(function (e) {
+            if($("#name").val().trim() == ""){
+                e.preventDefault();
+                alert("请选择语言");
+                return false;
+            }
+        })
+    })
+</script>
+</body>
+</html>

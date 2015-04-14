@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=name%>项目 -- 修改key</title>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+    <link rel="stylesheet" href="/stylesheets/bootstrap.css"/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<!--<div class="container">-->
+    <div class="head breadcrumb" data-project="<%=name%>">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=name%>/show">项目首页</a>
+    </div>
+    <div class="alert alert-success tip i-hide"></div>
+    <div style="margin-bottom: 15px;">
+        <div>
+            <label class="control-label">项目名称:</label><span class="label label-info"><%=name%></span>
+        </div>
+        <div>
+            <label class="control-label">项目负责人:</label><span class="label label-info"><%=owner%></span>
+        </div>
+        <div>
+            <span class="label label-info">共有<%= list.length %> 条语句</span>
+        </div>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% list.forEach(function(item){ %>
+        <tr data-id="<%=item._id%>">
+            <td contenteditable class="editable itemKey" data-data="<%=item.key%>" data-type="key"><%=item.key%></td>
+            <td data-type="value"><%=item.value%></td>
+            <td><button disabled="disabled" class="disabled keySave btn">save</button></td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+<!--</div>-->
+<script type="text/javascript">
+    (function () {
+        // 编辑操作
+        $(".editable")
+                .live('focus blur keyup paste', function () {
+                    var $this = $(this);
+                    if ($this.attr("data-data").trim() !== $this.text().trim()) {
+                        $this.closest("tr").find(".keySave").removeAttr("disabled").removeClass("disabled").addClass("btn-primary");
+                    }else{
+                        $this.closest("tr").find(".keySave").attr("disabled","disabled").addClass("disabled").removeClass("btn-primary");
+                    }
+                    return $this;
+                });
+                $(".keySave").live('click', function () {
+                    var $this = $(this);
+                    // 修改key
+                    var trDom = $this.closest("tr");
+                    var id = trDom.attr('data-id');
+                    var itemKey = trDom.find(".itemKey").text().trim().replace(/\s/g," ");
+                    var projectName = $(".head").attr("data-project");
+                    $.post("/web/project/"+ projectName +"/lang/editKey", {
+                        id: id,
+                        key: itemKey
+                    }, function (data) {
+                        if (data == 'success') {
+                            var $tip = $(".tip");
+                            $tip.text('修改key 为：'+ itemKey +'成功');
+                            $this.attr("data-data",itemKey);
+                            $tip.show().delay(2000).fadeOut();
+                            $this.attr("disabled","disabled").addClass("disabled").removeClass("btn-primary");
+                        }
+                    })
+                });
+    })();
+</script>
+</body>
+</html>

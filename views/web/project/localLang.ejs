@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>设置本地维护语言</title>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body data-project="<%=projectName%>">
+<div class="container">
+    <div class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </div>
+    <div class="label label-warning" style="display: block;text-align: left">
+        <p>该设置只对上平台的项目有用，没有上平台的项目默认都是本地维护的</p>
+        <p>注：如果设置了本地维护语言，那么该语种在crowdin平台上的翻译将不采纳，一律以本地翻译为主</p>
+    </div>
+    <br>
+    <div class="alert alert-danger tip" style="display: none;"></div>
+    <% if(allLang.length > 0){ %>
+    <div>
+        <div class="col-sm-2">
+            添加本地维护语言：
+        </div>
+        <div class="col-sm-4">
+            <select class="form-control localSelect">
+                <% allLang.forEach(function(langItem){ %>
+                <option data-name="<%=langItem.name%>" data-langcode="<%=langItem.langcode%>" data-folder="<%=langItem.folder%>"><%= langItem.name %> (<%=langItem.langcode%>)</option>
+                <%})%>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <div class="btn btn-primary addlocal">
+                添加
+            </div>
+        </div>
+    </div>
+    <%}%>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>语言名称</th>
+            <th>编码</th>
+            <th>文件夹名称</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <% selectLang.forEach(function(lang){ %>
+        <tr id="<%=lang._id%>">
+            <td><%=lang.name%></td>
+            <td><%=lang.langcode%></td>
+            <td><%=lang.folder%></td>
+            <td>
+                <button type="button" class="btn btn-link dellocal" data-langcode="<%=lang.langcode%>">
+                    <span class="glyphicon glyphicon-trash"></span>
+                </button>
+            </td>
+        </tr>
+        <% }) %>
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    (function () {
+        // 添加本地语言
+        $(".addlocal").click(function () {
+            var projectName = $("body").attr("data-project");
+            // 获取语言
+            var langcode = $($(".localSelect").get(0).selectedOptions).attr("data-langcode");
+            $.ajax({
+                type: "POST",
+                url: "/web/project/"+ projectName +"/addLocalLang",
+                data: {langcode: langcode},
+                success: function (data) {
+                    if(data == 'success'){
+                        // 成功就重新刷新一遍
+                        window.location.reload();
+                    }else{
+                        $('.tip').text(data).show().delay(2000).fadeOut();
+                    }
+                },
+                error: function (data) {
+
+                }
+            });
+        });
+        // 取消本地维护
+        $(".dellocal").click(function (e) {
+            var projectName = $("body").attr("data-project");
+            // 获取语言
+            var langcode = $(e.currentTarget).attr("data-langcode");
+            if(confirm("确定要取消" + langcode + "的本地维护")){
+                $.ajax({
+                    type: "POST",
+                    url: "/web/project/"+ projectName +"/delLocalLang",
+                    data: {langcode: langcode},
+                    success: function (data) {
+                        if(data == 'success'){
+                            // 成功就重新刷新一遍
+                            window.location.reload();
+                        }else{
+                            $('.tip').text(data).show().delay(2000).fadeOut();
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                });
+            }
+        });
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%=name%> -- 添加词条</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script type="text/javascript" src="/javascripts/jquery.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=name%>/show">项目首页</a> |
+    </nav>
+
+    <%if(msg){%>
+    <div class="alert alert-success tip i-hide"><%=msg%></div>
+    <script type="text/javascript">
+        $('.tip').show().delay(2000).fadeOut();
+    </script>
+    <%}%>
+
+    <div class="panel panel-primary">
+
+        <div class="panel-heading">
+            <span>批量添加新key</span> -- <span><%=name%></span>
+        </div>
+
+        <div class="panel-body">
+            <form method="POST">
+                <div class="item form-group">
+                    <label>批量key所在的json字符串:</label>
+                    <pre>
+                        {
+                            "key" : {
+                                "key1":"value1",
+                                "key2":"value2"
+                            },
+                            "key3":"value3"
+                        }
+                    </pre>
+                    <textarea style="height: 300px;" class="form-control" name="keyStr" required=""></textarea>
+                </div>
+                <input class="btn btn-primary" type="submit" value="提交">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

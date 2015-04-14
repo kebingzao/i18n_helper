@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>生成开发中使用的文件</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+
+<body>
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+
+    <form class="" method="post" enctype="multipart/form-data" action="/web/project/<%=projectName%>/buildFile">
+        <div class="form-group">
+            <label>选择要生成文件的数据格式</label>
+            <select class="form-control" name="ext">
+                <option value="js" default>js</option>
+                <option value="json">json</option>
+            </select>
+        </div>
+        <input class="btn btn-primary" class="form-control" type="submit" value="生成">
+    </form>
+</div>
+</body>
+</html>

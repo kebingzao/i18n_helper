@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>操作成功</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.css'/>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+</head>
+
+<body>
+
+<div class="container">
+    <nav class="breadcrumb">
+        <a href="/web/">首页</a> |
+        <a href="/web/project/<%=projectName%>/show">项目首页</a> |
+    </nav>
+
+    <div class="jumbotron">
+        <% decodeURIComponent(msg).split("=====").forEach(function(item){ %>
+         <p><%=item%></p>
+        <% }) %>
+    </div>
+</div>
+</body>
+</html>
